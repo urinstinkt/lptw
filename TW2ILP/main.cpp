@@ -27,7 +27,8 @@ auto solve(Project &project, Solver::Options options, bool writeLinePool = false
     auto td = TreeDecomposition::parse(tdfile);
     cout << "treewidth: " << td.getLargestBagSize()-1 << endl;
 
-    Graphics::drawTreeDecomposition(td, project.graphics_folder);
+    if (options.enableVisualization)
+        Graphics::drawTreeDecomposition(td, project.graphics_folder);
 
     auto lineConcept = Solver::solve(instance, td, options);
     cout << "feasible: " << lineConcept.isFeasible(instance, true) << endl;
@@ -60,6 +61,7 @@ int main(int argc, char** argv) {
         cout << "  -t<value>: time limit for ILP solving, in seconds" << endl;
         cout << "  -mg<value>: relative MIP optimality gap (Gurobi MIPGap)" << endl;
         cout << "  -td-default: disable specialized tree decomposition algorithms" << endl;
+        cout << "  -no-viz: disable visualization output" << endl;
         //cout << "computes the optimal line concept" << endl;
         cout << "outputs:" << endl;
         cout << "  solution:           <input_folder>/line-planning/Line-Concept.lin" << endl;
@@ -86,6 +88,11 @@ int main(int argc, char** argv) {
             par = par.substr(3);
             options.MIPGap = std::stod(par);
         }
+        else if (par == "-no-viz") {
+            options.enableVisualization = false;
+        } else {
+            cout << "unknown parameter: " << par << endl;
+        }
     }
 
     if (filesystem::is_directory(instance_dir))
@@ -94,7 +101,8 @@ int main(int argc, char** argv) {
         {
             Project project(instance_dir);
             auto lineConcept = solve(project,options);
-            Graphics::drawInstanceWithLineConcept(project);
+            if (options.enableVisualization)
+                Graphics::drawInstanceWithLineConcept(project);
             return 0;
         } catch(std::runtime_error &err)
         {

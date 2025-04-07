@@ -14,6 +14,7 @@ namespace Solver{
         bool allowPaths = true;
         bool allowCycles = false;
         bool enableSpecializedTD = true;
+        bool enableVisualization = true;
     };
 
     LinePlanning::LineConcept solve(const LinePlanning::Instance& instance, const TreeDecomposition::TreeDecomposition& td, const Options &options);
