@@ -3,16 +3,19 @@
 #ifndef LINEPLANNING_GRAPHICS_H
 #define LINEPLANNING_GRAPHICS_H
 
-#include "LinePlanning.h"
 #include <filesystem>
+#include "LinePlanning.h"
+#include "TreeDecomposition.h"
+#include "DataParser.h"
 
 namespace Graphics {
 
     using namespace LinePlanning;
     using std::filesystem::path;
 
-    void drawInstanceWithLineConcept(path instanceFolder, LineConcept const& lc, std::ostream& os);
-    void drawInstanceWithLineConcept(path instanceFolder);
+    void drawInstanceWithLineConcept(const Project &project, LineConcept const& lc, std::ostream& os);
+    void drawInstanceWithLineConcept(const Project &project);
+    void drawTreeDecomposition(const TreeDecomposition::TreeDecomposition &td, path outputFolder);
 }
 
 

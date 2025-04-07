@@ -6,6 +6,8 @@
 #include <cmath>
 #include <iomanip>
 
+#include "TreeDecomposition.h"
+
 namespace Graphics {
 
     using namespace LinePlanning;
@@ -36,9 +38,8 @@ namespace Graphics {
         }
     };
 
-    void drawInstanceWithLineConcept(path instanceFolder, LineConcept const &lineConcept, std::ostream& os)
+    void drawInstanceWithLineConcept(const Project &project, LineConcept const &lineConcept, std::ostream& os)
     {
-        Project project(instanceFolder);
         auto inStream = std::ifstream(project.input_folder / "Stop.giv");
         auto nodeData = parseNodeInfo(inStream);
 
@@ -199,18 +200,36 @@ namespace Graphics {
     }
 
 
-    void drawInstanceWithLineConcept(path instanceFolder)
+    void drawInstanceWithLineConcept(const Project &project)
     {
-        auto lc = parseLineConcept(instanceFolder / "line-planning" / "Line-Concept.lin");
-        filesystem::create_directory(instanceFolder / "graphics");
-        std::ofstream dotfile(instanceFolder / "graphics" / "line-plan.dot");
-        drawInstanceWithLineConcept(instanceFolder, lc, dotfile);
+        auto lc = parseLineConcept(project.output_folder / "Line-Concept.lin");
+
+        filesystem::create_directory(project.graphics_folder);
+        std::ofstream dotfile(project.graphics_folder / "line-plan.dot");
+        drawInstanceWithLineConcept(project, lc, dotfile);
         dotfile.close();
 
-        string str = "neato -n2 -Tpng "+(instanceFolder / "graphics" / "line-plan.dot").string()+" -o \""+(instanceFolder / "graphics" / "line-plan.png").string()+"\"";
+        string str = "neato -n2 -Tpng "+(project.graphics_folder / "line-plan.dot").string()+" -o \""+(project.graphics_folder / "line-plan.png").string()+"\"";
         int result = system(str.c_str());
         if (result != 0) {
-            throw std::runtime_error("neato failed");
+            //throw std::runtime_error("neato failed!");
+            cerr << "neato failed!" << endl;
         }
     }
+
+    void drawTreeDecomposition(const TreeDecomposition::TreeDecomposition &td, path outputFolder)
+    {
+        filesystem::create_directory(outputFolder);
+        ofstream td_dotfile(outputFolder/ "td.dot");
+        td.toGraphViz(td_dotfile);
+        td_dotfile.close();
+
+        string str = "neato -Tpng "+(outputFolder/ "td.dot").string()+" -o \""+(outputFolder / "td.png").string()+"\"";
+        int result = system(str.c_str());
+        if (result != 0) {
+            //throw std::runtime_error("neato failed!");
+            cerr << "neato failed!" << endl;
+        }
+    }
+
 }

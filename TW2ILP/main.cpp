@@ -8,10 +8,8 @@ using namespace LinePlanning;
 using namespace std;
 using filesystem::path;
 
-auto solve(path instance_base_folder, Solver::Options options, bool writeLinePool = false)
+auto solve(Project &project, Solver::Options options, bool writeLinePool = false)
 {
-    Project project(instance_base_folder);
-
     Instance instance = project.parseInstanceFiles();
     if (!filesystem::exists(project.output_folder)) {
         filesystem::create_directory(project.output_folder);
@@ -29,12 +27,7 @@ auto solve(path instance_base_folder, Solver::Options options, bool writeLinePoo
     auto td = TreeDecomposition::parse(tdfile);
     cout << "treewidth: " << td.getLargestBagSize()-1 << endl;
 
-    {
-        ofstream td_dotfile(project.graphics_folder / "td.dot");
-        td.toGraphViz(td_dotfile);
-        string str = "neato -Tpng "+(project.graphics_folder / "td.dot").string()+" -o \""+(project.graphics_folder / "td.png").string()+"\"";
-        ::system(str.c_str());
-    }
+    Graphics::drawTreeDecomposition(td, project.graphics_folder);
 
     auto lineConcept = Solver::solve(instance, td, options);
     cout << "feasible: " << lineConcept.isFeasible(instance, true) << endl;
@@ -69,8 +62,11 @@ int main(int argc, char** argv) {
         cout << "  -td-default: disable specialized tree decomposition algorithms" << endl;
         //cout << "computes the optimal line concept" << endl;
         cout << "outputs:" << endl;
-        cout << "  solution:      <input_folder>/line-planning/Line-Concept.lin" << endl;
-        cout << "  visualization: <input_folder>/graphics/line-plan.png" << endl;
+        cout << "  solution:           <input_folder>/line-planning/Line-Concept.lin" << endl;
+        cout << "  tree decomposition: <input_folder>/line-planning/out.td" << endl;
+        cout << "  visualizations:" << endl;
+        cout << "    line concept:     <input_folder>/graphics/line-plan.png" << endl;
+        cout << "    tree decomp.:     <input_folder>/graphics/td.png" << endl;
         return 0;
     }
 
@@ -96,8 +92,9 @@ int main(int argc, char** argv) {
     {
         try
         {
-            auto lineConcept = solve(instance_dir,options);
-            Graphics::drawInstanceWithLineConcept(instance_dir);
+            Project project(instance_dir);
+            auto lineConcept = solve(project,options);
+            Graphics::drawInstanceWithLineConcept(project);
             return 0;
         } catch(std::runtime_error &err)
         {

@@ -23,7 +23,7 @@ namespace LinePlanning {
             if (!filesystem::exists(*it) && (it+1) != config_path_with_fallbacks.end())
                 continue;
             try {
-                ConfigReader reader(&config->config, it->string(), false);
+                ConfigReader reader(&config->config, it->string(), true);
                 reader.read();
                 break;
             } catch (::InputFileException &ex) {
@@ -34,16 +34,16 @@ namespace LinePlanning {
         }
     }
 
-    double Config::getDouble(string key){
+    double Config::getDouble(string key) const{
         return config->config.getDoubleValue(key);
     }
-    int Config::getInt(string key){
+    int Config::getInt(string key) const{
         return config->config.getIntegerValue(key);
     }
-    string Config::getString(string key){
+    string Config::getString(string key) const{
         return config->config.getStringValue(key);
     }
-    bool Config::getBool(string key){
+    bool Config::getBool(string key) const{
         return config->config.getBooleanValue(key);
     }
 }
@@ -192,7 +192,7 @@ namespace LinePlanning
         graphics_folder = rootDirectory / "graphics";
     }
 
-    Instance Project::parseInstanceFiles()
+    Instance Project::parseInstanceFiles() const
     {
         Instance instance;
         ifstream fileEdges(input_folder / "Edge.giv");

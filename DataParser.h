@@ -39,10 +39,10 @@ namespace LinePlanning
     public:
         explicit Config(std::initializer_list<std::filesystem::path> config_path_with_fallbacks);
 
-        double getDouble(string key);
-        int getInt(string key);
-        string getString(string key);
-        bool getBool(string key);
+        double getDouble(string key) const;
+        int getInt(string key) const;
+        string getString(string key) const;
+        bool getBool(string key) const;
     };
 
     class Project {
@@ -54,9 +54,9 @@ namespace LinePlanning
         path graphics_folder;
         Config config;
 
-        Project(const std::filesystem::path& rootDirectory);
+        explicit Project(const std::filesystem::path& rootDirectory);
 
-        Instance parseInstanceFiles();
+        Instance parseInstanceFiles() const;
 
     };
 }
