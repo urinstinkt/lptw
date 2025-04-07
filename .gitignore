@@ -1,0 +1,12 @@
+cmake-build*
+bin
+
+tw-in.gr
+tw-out.td
+
+/PACE2017-TrackA-master/td-validate-master/
+/PACE2017-TrackA-master/test_instance/
+/PACE2017-TrackA-master/test_result/
+*.class
+
+.idea
