@@ -17,7 +17,7 @@ void do_tree_decomposition(path instance_base_folder, bool outputGraphics = true
     Instance instance = project.parseInstanceFiles();
 
     filesystem::create_directory(instance_output_folder);
-    auto td = TreeDecomposition::compute(TreeDecomposition::convert(instance.graph), instance_output_folder / "out.td");
+    auto td = TreeDecomposition::compute(TreeDecomposition::convert(instance.graph), instance_output_folder / "out.td", false);
     cout << "treewidth: " << td.getTreeWidth() << endl;
     if (outputGraphics)
     {
