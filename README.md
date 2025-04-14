@@ -55,4 +55,4 @@ of the line plan and the tree decomposition.
 LinTim also comes with a nice line plan visualization tool, which you may prefer over ours 😉
 
 ## Experiments
-TODO
+See https://github.com/urinstinkt/lptw-experiments
